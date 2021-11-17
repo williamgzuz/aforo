@@ -31,16 +31,17 @@
                             <form>
                                 <div class="form-group">
                                     <label>Fecha</label>
-                                    <input type="date" id="fecha" class="form-control" placeholder="Ingrese la fecha" aria-describedby="helpFecha">
+                                    <input type="date" id="fecha" class="form-control" placeholder="Ingrese la fecha" 
+                                    aria-describedby="helpFecha">
                                     <small id="helpFecha" class="text-muted">Fecha de la reserva</small>
                                 </div>
                                 <div class="form-group">
                                     <label>Ambiente</label>
-                                    <select class="form-control" id="ambiente">
+                                    <select class="form-control" id="ambiente" onclick="MostrarConteo()">
                                         <option value="-1">--Seleccione--</option>
 
                                     </select>
-                                    <h5 id="aforounico" onclick="MostrarConteo">Hola Mundo</h5>
+                                    <h5 id="aforounico" >Hola Mundo</h5>
                                     <small id="helpAmbiente" class="text-muted">Ambiente a reservar</small>
                                 </div>
                                 <button type="button" class="btn btn-sm btn-primary" id="btnRegistrar">Registrar</button>
@@ -126,6 +127,8 @@
             })
         }
 
+        
+
         function mostrarDetalleEdificio(edificioId) {
             $("#ambiente").children('option:not(:first)').remove();
             $.when(
@@ -144,12 +147,28 @@
                     let data = JSON.parse(ambienteResponse);
                     for (let idx = 0; idx < data.length; idx++) {
                         const ambiente = data[idx];
-                        $("#ambiente").append('<option value="' + ambiente.id + '">' + ambiente.nombre + ' (aforo' + ambiente.aforo + ')</option>');
+                        $("#ambiente").append('<option value="' + ambiente.id + '"" onclick=MostrarConteo()">' + ambiente.nombre + ' (aforo' + ambiente.aforo + ')</option>');
+                        function MostrarConteo(ambienteId) {
+                            $.when(
+                            $.get("data/ambiente.php?accion=aforo$aforo="+ambienteId)
+                        ).then(function(ambienteRequest){
+                            let ambienteResponse = ambienteRequest[0];
+                            if (ambienteResponse != "NoError") {
+                            let data=JSON.parse(ambienteResponse);
+                            $("#aforounico").html(data.aforo);                          
+                            }
+                        })
+                        }
                         
+                        
+
                     }
+
                 }
 
             })
+
+
         }
 
 

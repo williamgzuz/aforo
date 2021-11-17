@@ -16,15 +16,7 @@ if ($_POST) {
         $verificar_fecha=mysqli_query($db, "SELECT * FROM reservas WHERE fecha='$fecha'");
 
         if (mysqli_num_rows($verificar_fecha)>0) { 
-            echo '
-            <script>
-            alert("Esta fecha ya está ocupada, intenta con otro diferente");
-            window.location="../includes/index.php";
-
-            </script>
-            
-            ';
-            exit();
+                        exit();
         }
 
         $result = $db->query($sql);

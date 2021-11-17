@@ -25,17 +25,24 @@ if ($_POST) {
         }
         
     }
-    if ($_GET['accion']=="MostrarAforoRestante") {
+    if ($_GET['accion']=="aforo") {
         $ambiente =$_GET['id'];
         $aforo=$_GET['aforo'];
         $reservas=$_GET['ambiente_id'];
 
-        $consulta="SELECT COUNT(ambiente_id) FROM reservas INNER JOIN ambientes ON reservas.ambiente_id=ambientes.id WHERE ambiente_id=$ambiente";
-
+        $consulta="SELECT COUNT(ambiente_id) FROM reservas INNER JOIN ambientes ON 
+        reservas.ambiente_id=ambientes.id WHERE ambiente_id=$ambiente";
+        $aforos=array();
         $result = $db->query($consulta);
+
+        while ($aforo=$result->fetch_assoc()) {
+            $aforos[]=$aforo;
+        }
         
-        if (count($ambiente)>0) {
-            echo "no hay error";
+        if (count($aforos)>0) {
+            echo json_encode($aforos);
+        }else {
+            echo "NoError";
         }
 
     }
