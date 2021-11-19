@@ -2,8 +2,10 @@
 <html lang="en">
 
 <head>
+    
     <?php
-    include_once("includes/css_link.php")
+    include_once("includes/css_link.php");
+    
     ?>
     <title>Reservas de ambientes</title>
 </head>
@@ -37,11 +39,11 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Ambiente</label>
-                                    <select class="form-control" id="ambiente" onclick="MostrarConteo()">
-                                        <option value="-1">--Seleccione--</option>
+                                    <select  class="form-control" id="ambiente">
+                                        <option value="-1"  >--Seleccione--</option>
 
                                     </select>
-                                    <h5 id="aforounico" >Hola Mundo</h5>
+                                    <div id="aforounico" >aforo</div>
                                     <small id="helpAmbiente" class="text-muted">Ambiente a reservar</small>
                                 </div>
                                 <button type="button" class="btn btn-sm btn-primary" id="btnRegistrar">Registrar</button>
@@ -56,9 +58,26 @@
     include_once("includes/js_link.php")
     ?>
     <script>
+$(document).ready(function () {
+            recargarAforo();
 
-      
+            $('#ambiente').change(function (){
+                recargarAforo();
+            });
+        })
+        function recargarAforo() {
+            $.ajax({
 
+                type:"POST",
+                url:"data/ambiente.php",
+                data: "continente=" + $('#ambiente').val(),
+                success:function(r){
+                    $('#aforounico').html(r);
+                }
+            });
+        }
+    </script>
+    <script>
         $(document).ready(function() {
             cargarEdificios();
             $("#btnRegistrar").click(function() {
@@ -89,9 +108,15 @@
                         }).then((result) => {
                             location.reload();
                         });
-                    } else {
+                    } else if(response =="Ya existe"){
                         Swal.fire({
-                            text: 'No se ha podido completar el registro',
+                            text: 'Reserva ocupada',
+                            icon: 'error',
+                            confirmButtonText: 'Aceptar'
+                        });
+                    } else{
+                        Swal.fire({
+                            text: 'No se ha podido completar el registro....',
                             icon: 'error',
                             confirmButtonText: 'Aceptar'
                         });
@@ -147,35 +172,27 @@
                     let data = JSON.parse(ambienteResponse);
                     for (let idx = 0; idx < data.length; idx++) {
                         const ambiente = data[idx];
-                        $("#ambiente").append('<option value="' + ambiente.id + '"" onclick=MostrarConteo()">' + ambiente.nombre + ' (aforo' + ambiente.aforo + ')</option>');
-                        function MostrarConteo(ambienteId) {
-                            $.when(
-                            $.get("data/ambiente.php?accion=aforo$aforo="+ambienteId)
-                        ).then(function(ambienteRequest){
-                            let ambienteResponse = ambienteRequest[0];
-                            if (ambienteResponse != "NoError") {
-                            let data=JSON.parse(ambienteResponse);
-                            $("#aforounico").html(data.aforo);                          
-                            }
-                        })
-                        }
+                        $("#ambiente").append('<option value="' + ambiente.id + '" >' + ambiente.nombre + ' (aforo' + ambiente.aforo + ')</option>');
                         
                         
 
                     }
+                    
 
                 }
-
+                 
             })
-
+            
 
         }
-
-
+        
+       
         
     </script>
 
-    
+                
+
+               
 </body>
 
 </html>

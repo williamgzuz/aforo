@@ -2,8 +2,20 @@
 require_once("db.php");
 
 
+
 if ($_POST) {
 
+    $continente=$_POST['continente'];
+   
+    $sql="SELECT nombre,(aforo-(SELECT COUNT(id) FROM reservas WHERE ambiente_id='$continente')) 
+    FROM ambientes WHERE id='$continente'";
+    
+    $result=mysqli_query($db,$sql);
+    $cadena="<div id='aforo'>";
+    while ($ver=mysqli_fetch_row($result)) {
+        $cadena=$cadena.'<option value='.$ver[0].'>'.utf8_encode($ver[1]).'</option>';
+    }
+    echo $cadena."</div>";
 
 
 
@@ -25,27 +37,7 @@ if ($_POST) {
         }
         
     }
-    if ($_GET['accion']=="aforo") {
-        $ambiente =$_GET['id'];
-        $aforo=$_GET['aforo'];
-        $reservas=$_GET['ambiente_id'];
-
-        $consulta="SELECT COUNT(ambiente_id) FROM reservas INNER JOIN ambientes ON 
-        reservas.ambiente_id=ambientes.id WHERE ambiente_id=$ambiente";
-        $aforos=array();
-        $result = $db->query($consulta);
-
-        while ($aforo=$result->fetch_assoc()) {
-            $aforos[]=$aforo;
-        }
-        
-        if (count($aforos)>0) {
-            echo json_encode($aforos);
-        }else {
-            echo "NoError";
-        }
-
-    }
+    
 
   
 

@@ -15,8 +15,9 @@ if ($_POST) {
 
         $verificar_fecha=mysqli_query($db, "SELECT * FROM reservas WHERE fecha='$fecha'");
 
-        if (mysqli_num_rows($verificar_fecha)>0) { 
-                        exit();
+        if (mysqli_num_rows($verificar_fecha)>0) {
+            echo "Ya existe";
+            exit();
         }
 
         $result = $db->query($sql);
